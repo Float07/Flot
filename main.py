@@ -1,6 +1,4 @@
-#https://api.telegram.org/bot<token>/METHOD_NAME
-#1107398730:AAFmVSD0cLcJ8h8qXIRb-Sd6dqe9sJuRSvc
-#https://api.telegram.org/bot1107398730:AAFmVSD0cLcJ8h8qXIRb-Sd6dqe9sJuRSvc/METHOD_NAME
+
 
 import requests
 import json
@@ -8,7 +6,7 @@ import json
 Paramet = {"offset": 0}
 executing = True
 while executing:
-    URL = "https://api.telegram.org/bot1107398730:AAFmVSD0cLcJ8h8qXIRb-Sd6dqe9sJuRSvc/"
+    URL = "https://api.telegram.org/<TOKEN>/"
     updates = requests.get(url=URL+"getUpdates", params=Paramet)
     updatesJSON = updates.json()
 
