@@ -1,16 +1,19 @@
+#https://api.telegram.org/bot<token>/METHOD_NAME
+#1107398730:AAFmVSD0cLcJ8h8qXIRb-Sd6dqe9sJuRSvc
+#https://api.telegram.org/bot1107398730:AAGG_FXoQ713wj-KT8iNJxzawugN_dgd9ls/METHOD_NAME
 
-
+import hyeScore as hye
 import requests
 import json
 
 Paramet = {"offset": 0}
 executing = True
 while executing:
-    URL = "https://api.telegram.org/<TOKEN>/"
+    URL = "https://api.telegram.org/bot1107398730:AAGG_FXoQ713wj-KT8iNJxzawugN_dgd9ls/"
     updates = requests.get(url=URL+"getUpdates", params=Paramet)
     updatesJSON = updates.json()
 
-    if updatesJSON["result"]!=[]:
+    if updatesJSON["result"]:
 
         if "message" in updatesJSON["result"][0] and "text" in updatesJSON["result"][0]["message"]:#Se é uma mensagem de texto
             rText = updatesJSON["result"][0]["message"]["text"]
@@ -25,12 +28,12 @@ while executing:
                 sendMessageParam = {"chat_id": updatesJSON["result"][0]["message"]["chat"]["id"],
                                     "text": "Oi",
                                     "reply_to_message_id": updatesJSON["result"][0]["message"]["message_id"]}
-                print(updatesJSON["result"][0]["message"]["from"]["first_name"])
                 if updatesJSON["result"][0]["message"]["from"]["id"] == 735844467:
                     sendMessageParam = {"chat_id": updatesJSON["result"][0]["message"]["chat"]["id"],
                                     "text": "Você Não",
                                     "reply_to_message_id": updatesJSON["result"][0]["message"]["message_id"]}
                 sendMessage = requests.post(url=URL + "sendMessage", data=sendMessageParam)
+                hye.increaseScore(updatesJSON["result"][0]["message"], 1)
 
             elif rText.lower() == "tchau":
                 sendMessageParam = {"chat_id": updatesJSON["result"][0]["message"]["chat"]["id"],
@@ -41,6 +44,10 @@ while executing:
                                         "text": "...",
                                         "reply_to_message_id": updatesJSON["result"][0]["message"]["message_id"]}
                 sendMessage = requests.post(url=URL + "sendMessage", data=sendMessageParam)
+                hye.increaseScore(updatesJSON["result"][0]["message"], 2)
+
+            elif "/tchoiscore" in rText.lower():
+                hye.print_scores(updatesJSON["result"][0]['message']["chat"]["id"])
 
             elif "/banmeireles" in rText.lower():
                 startPollParam = {"chat_id": updatesJSON["result"][0]["message"]["chat"]["id"],
