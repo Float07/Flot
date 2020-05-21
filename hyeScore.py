@@ -3,8 +3,10 @@
 import requests
 import json
 
-URL = "https://api.telegram.org/bot1107398730:AAGG_FXoQ713wj-KT8iNJxzawugN_dgd9ls/"
-
+URL = "https://api.telegram.org/"
+file = open("key", 'r')
+URL = URL + file.read()[:-1]
+file.close()
 
 def sortScore(scores):
     scores = sorted(scores, key=lambda i: i["totals"], reverse=True)
@@ -58,9 +60,12 @@ def print_scores(chat_command_id):
             chat_param = {"chat_id": score["user_id"]}
             get_chat = requests.get(url=URL + "getChat", params=chat_param)
             chat_json = get_chat.json()
-            complete_message = complete_message + str(idx) + "- " + chat_json["result"]["first_name"] + " " +\
-                chat_json["result"]["last_name"] + "=> " + "Ois:" + str(score["ois"]) + "  Tchaus:" +\
-                str(score["tchaus"]) + "  Totals:" + str(score["totals"]) + "\n"
+            if chat_json['ok']:
+                complete_message = complete_message + str(idx) + "- " + chat_json["result"]["first_name"] + " " +\
+                    chat_json["result"]["last_name"] + "=> " + "Ois:" + str(score["ois"]) + "  Tchaus:" +\
+                    str(score["tchaus"]) + "  Totals:" + str(score["totals"]) + "\n"
+            else:
+                print(score["user_id"])
 
         message_param = {"chat_id": chat_command_id,
                          "text": complete_message}
