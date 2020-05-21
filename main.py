@@ -133,3 +133,5 @@ while executing:
                 executing = False
                 print("Finalizando processo por ordem do usuário")
             Paramet["offset"] = message["update_id"] + 1
+
+updates = requests.get(url=URL+"getUpdates", params=Paramet)#Avança a última mensagem enviada pelo usuário antes de finalizar
