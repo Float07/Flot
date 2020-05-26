@@ -88,6 +88,18 @@ def processMessage(message):
             sendMessage = requests.post(url=URL + "sendMessage", data=sendMessageParam)
             print(sendMessage)
 
+        elif "/questanon" in rText.lower():
+            splitText = rText.split(' ', 1)
+            if len(splitText) > 1:
+                name = splitText[1]
+                startPollParam = {"parse_mode": "MarkdownV2",
+                                "chat_id": -1001367341107,
+                                "question": "Pergunta anônima: " + name,
+                                "options": json.dumps(["Sim", "Não", "Acho que sim mas sei lá :/","Talvez", "Não sei"]),
+                                "is_anonymous": False}
+                startPoll = requests.post(url=URL + "sendPoll", data=startPollParam)
+
+
         elif "/tchoiscore" in rText.lower():
             hye.print_scores(message['message']["chat"]["id"])
 
