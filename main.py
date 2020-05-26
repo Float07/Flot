@@ -17,7 +17,24 @@ URL = URL + file.read()[:-1]
 file.close()
 
 def processMessage(message):
-    if "message" in message and "text" in message[
+    if "message" in message and "photo" in message["message"]:
+        rText = ""
+        if "caption" in message["message"]:
+            rText = message["message"]["caption"]
+        photoId = message["message"]["photo"][0]["file_id"]
+
+        if "/anon" in rText.lower():
+            splitText = rText.split(' ', 1)
+            if len(splitText) <= 1:
+                splitText.append("")
+            sendMessageParam = {"parse_mode": "MarkdownV2",
+                                "photo": photoId,
+                                "chat_id": -1001367341107,
+                                "caption": "*Mensagem anônima*: " + splitText[1], }
+            sendMessage = requests.post(url=URL + "sendPhoto", data=sendMessageParam)
+            print(sendMessage)
+
+    elif "message" in message and "text" in message[
         "message"]:  # Se é uma mensagem de texto
         rText = message["message"]["text"]
 
@@ -60,6 +77,16 @@ def processMessage(message):
                                     "text": "É...",
                                     "reply_to_message_id": message["message"]["message_id"]}
             sendMessage = requests.post(url=URL + "sendMessage", data=sendMessageParam)
+
+        elif "/anon" in rText.lower():
+            splitText = rText.split(' ', 1)
+            if len(splitText) <= 1:
+              splitText.append("")
+            sendMessageParam = {"parse_mode": "MarkdownV2",
+                                "chat_id": -1001367341107,
+                                "text": "*Mensagem anônima:* " + splitText[1], }
+            sendMessage = requests.post(url=URL + "sendMessage", data=sendMessageParam)
+            print(sendMessage)
 
         elif "/tchoiscore" in rText.lower():
             hye.print_scores(message['message']["chat"]["id"])
@@ -108,10 +135,18 @@ def processMessage(message):
                 SendMessageParam["text"] = "Você não pode acender bombas andré foi mal :("
             sendMessage = requests.post(url=URL + "sendMessage", data=SendMessageParam)
 
+        elif "/familyfriendlywarning" in rText.lower():
+            SendMessageParam = {"chat_id": message["message"]["chat"]["id"],
+                                "text": "Alerta Automático  do Family Friend ®\n❗️❗️❗️🔞🔞🔞❗️❗️❗️💥"}
+            if message["message"]   ["from"]["first_name"].lower() == "andre":
+                SendMessageParam["text"] = "Alerta Automático  do Family Friend ®❗️❗️❗️🔞🔞🔞❗️❗️"
+            sendMessage = requests.post(url=URL + "sendMessage", data=SendMessageParam)
+
         elif "/shrekscript" in rText.lower():
             shrekScriptFile = open('sscript.txt', mode='r')
-            shrekScript = shrekScriptFile.read()
-            shrekScript = shrekScript[:4000]
+            shrekScript = "https://www.youtube.com/watch?v=L_jWHffIx5E"
+            #shrekScript = shrekScriptFile.read()
+            #shrekScript = shrekScript[:4000]
             shrekScriptFile.close()
             SendMessageParam = {"chat_id": message["message"]["chat"]["id"],
                                 "text": shrekScript}
@@ -119,13 +154,14 @@ def processMessage(message):
                 SendMessageParam["text"] = "SOMEBODY ONCE TOLD ME"
             sendMessage = requests.post(url=URL + "sendMessage", data=SendMessageParam)
 
-        print(message['message'])
+        if "/anon" not in rText.lower():
+            print(message['message'])
 
 while executing:
     updates = requests.get(url=URL+"getUpdates", params=Paramet)
     updatesJSON = updates.json()
 
-    time.sleep(2)
+    time.sleep(1)
     if updatesJSON["result"]:#Se tiver mensagem ainda não lida
         for message in updatesJSON["result"]:
             # Avança para próxima mensagem
