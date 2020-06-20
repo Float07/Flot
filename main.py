@@ -2,7 +2,7 @@
 #1107398730:AAFmVSD0cLcJ8h8qXIRb-Sd6dqe9sJuRSvc
 #https://api.telegram.org/bot1107398730:AAGG_FXoQ713wj-KT8iNJxzawugN_dgd9ls/METHOD_NAME
 
-import numpy as np
+#import numpy as np
 import hyeScore as hye
 import requests
 import json
@@ -27,10 +27,11 @@ def processMessage(message):
             splitText = rText.split(' ', 1)
             if len(splitText) <= 1:
                 splitText.append("")
-            sendMessageParam = {"parse_mode": "MarkdownV2",
+            sendMessageParam = {"disable_web_page_preview": True,
+                                "parse_mode": "html",
                                 "photo": photoId,
                                 "chat_id": -1001367341107,
-                                "caption": "*Mensagem anônima*: " + splitText[1], }
+                                "caption": "<b>Mensagem anônima</b>: " + splitText[1], }
             sendMessage = requests.post(url=URL + "sendPhoto", data=sendMessageParam)
             print(sendMessage)
 
@@ -66,7 +67,7 @@ def processMessage(message):
                                     "text": "...",
                                     "reply_to_message_id": message["message"]["message_id"]}
             sendMessage = requests.post(url=URL + "sendMessage", data=sendMessageParam)
-            hye.increaseScore(updatesJSON["result"][0]["message"], 2)
+            hye.increaseScore(message["message"], 2)
 
         elif rText.lower() == "obrigado bot":
             sendMessageParam = {"chat_id": message["message"]["chat"]["id"],
@@ -82,9 +83,10 @@ def processMessage(message):
             splitText = rText.split(' ', 1)
             if len(splitText) <= 1:
               splitText.append("")
-            sendMessageParam = {"parse_mode": "MarkdownV2",
+            sendMessageParam = {"disable_web_page_preview": True,
+                                "parse_mode": "html",
                                 "chat_id": -1001367341107,
-                                "text": "*Mensagem anônima:* " + splitText[1], }
+                                "text": "<b>Mensagem anônima:</b> " + splitText[1], }
             sendMessage = requests.post(url=URL + "sendMessage", data=sendMessageParam)
             print(sendMessage)
 
@@ -94,7 +96,7 @@ def processMessage(message):
                 name = splitText[1]
                 startPollParam = {"parse_mode": "MarkdownV2",
                                 "chat_id": -1001367341107,
-                                "question": "Pergunta anônima: " + name,
+                                "question": "Questionário anônimo: " + name,
                                 "options": json.dumps(["Sim", "Não", "Acho que sim mas sei lá :/","Talvez", "Não sei"]),
                                 "is_anonymous": False}
                 startPoll = requests.post(url=URL + "sendPoll", data=startPollParam)
@@ -165,9 +167,6 @@ def processMessage(message):
             if message["message"]   ["from"]["first_name"].lower() == "andre":
                 SendMessageParam["text"] = "SOMEBODY ONCE TOLD ME"
             sendMessage = requests.post(url=URL + "sendMessage", data=SendMessageParam)
-
-        if "/anon" not in rText.lower():
-            print(message['message'])
 
 while executing:
     updates = requests.get(url=URL+"getUpdates", params=Paramet)
